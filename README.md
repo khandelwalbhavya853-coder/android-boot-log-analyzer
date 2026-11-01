@@ -33,6 +33,14 @@ python boot_analyzer.py sample-logs/sample-boot.log
 
 Use `--slow-ms 500` to lower the default slow-stage threshold of 1000 ms. Run `python boot_analyzer.py --help` for all options.
 
+## Project website
+
+The project website source is in `docs/`. After enabling GitHub Pages, it will be available at:
+
+<https://khandelwalbhavya853-coder.github.io/android-boot-log-analyzer/>
+
+To publish it, open the repository's **Settings → Pages**, choose **Deploy from a branch**, select branch `main` and folder `/docs`, then click **Save**. GitHub Pages may take a few minutes to publish the first build.
+
 ## Collecting logs with ADB
 
 Enable USB debugging (or start an emulator), connect the device, and check that ADB can see it:

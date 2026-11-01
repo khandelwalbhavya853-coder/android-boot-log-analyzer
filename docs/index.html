@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Android Boot Log Analyzer: detect startup errors, inspect boot timing, and view diagnostic reports.">
+  <meta name="theme-color" content="#090711">
+  <title>Android Boot Log Analyzer</title>
+  <style>
+    :root{color-scheme:dark;--bg:#090711;--panel:#11101d;--line:#ffffff19;--ink:#faf8ff;--muted:#b9b3cb;--purple:#9d7aff;--lilac:#b39aff;--mint:#87e6cd}
+    *{box-sizing:border-box;scroll-behavior:smooth}
+    body{margin:0;background:radial-gradient(ellipse at 50% -15%,#7651e4b8,transparent 38rem),radial-gradient(ellipse at 0 15%,#5336a54a,transparent 31rem),var(--bg);color:var(--ink);font:16px/1.6 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+    a{color:inherit}.wrap{width:min(1120px,calc(100% - 40px));margin:auto}
+    .topbar{height:74px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+    .brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:760;white-space:nowrap}.brand-icon{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:linear-gradient(145deg,#a587ff,#6540d0);box-shadow:0 0 24px #8c66f260}
+    .nav{display:flex;gap:4px;padding:5px;border:1px solid var(--line);border-radius:999px;background:#211b36c9;backdrop-filter:blur(12px)}.nav a{text-decoration:none;color:#e4def3;font-size:.83rem;padding:7px 13px;border-radius:999px;transition:.2s}.nav a:hover{background:#ffffff18;color:white}
+    .repo-link,.button{display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;border:1px solid #ffffff38;border-radius:999px;padding:10px 17px;font-size:.9rem;font-weight:650;transition:transform .2s,box-shadow .2s,background .2s}.repo-link{background:#ffffff0b}.button:hover,.repo-link:hover{transform:translateY(-2px);box-shadow:0 10px 30px #744de03d}.button.primary{background:linear-gradient(120deg,#9b75f5,#6943d1);border-color:transparent;color:#fff}.button.secondary{background:#ffffff0b}
+    .hero{position:relative;overflow:hidden;min-height:470px;display:grid;place-items:center;text-align:center;padding:66px 20px 74px;border-bottom:1px solid #ffffff13}
+    .hero:before{content:"";position:absolute;width:min(780px,90vw);height:420px;top:-225px;left:50%;transform:translateX(-50%);border-radius:50%;background:#a080ff66;filter:blur(95px);animation:glow 6s ease-in-out infinite alternate}
+    .hero:after{content:"";position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(#fff 1px,transparent 1.5px);background-size:91px 91px;opacity:.15;mask-image:linear-gradient(#000,transparent 82%)}
+    .hero-content{position:relative;z-index:1;max-width:830px;animation:rise .7s ease-out both}.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;color:#cabbff;border:1px solid #c4aeff38;border-radius:999px;background:#2a20485e;font-size:.72rem;font-weight:750;letter-spacing:.13em}
+    h1{font-size:clamp(2.4rem,6vw,4.2rem);line-height:1.08;letter-spacing:-.055em;margin:21px 0 16px}.accent{display:block;color:var(--lilac);text-shadow:0 0 35px #986eff80}.lead{max-width:660px;margin:0 auto;color:#d0c9dc;font-size:1.05rem}.actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:27px}
+    .section{padding:60px 0}.section-head{text-align:center;max-width:700px;margin:0 auto 30px}.section-head h2{font-size:clamp(1.7rem,3vw,2.35rem);letter-spacing:-.035em;margin:0 0 8px}.section-head p{margin:0;color:var(--muted)}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:26px}.stat,.feature,.resource{border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,#161323,#100e19);box-shadow:0 18px 50px #0003}.stat{padding:20px;text-align:center}.stat strong{display:block;font-size:1.75rem;color:#b7a1ff}.stat span{font-size:.86rem;color:var(--muted)}.synthetic{text-align:center;color:#918aa2;font-size:.8rem;margin:13px 0 0}
+    .features{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.feature{padding:22px;transition:transform .22s,border-color .22s}.feature:hover,.resource:hover{transform:translateY(-3px);border-color:#a888ff66}.feature-icon{display:grid;place-items:center;width:40px;height:40px;border-radius:13px;background:#8c6bea24;color:#c1adff;font-size:20px;margin-bottom:14px}.feature h3{margin:0 0 7px;font-size:1.05rem}.feature p{margin:0;color:var(--muted);font-size:.91rem}
+    .report-card{overflow:hidden;border:1px solid #c3aaff30;border-radius:20px;background:linear-gradient(145deg,#171326,#0f0d18);padding:22px;box-shadow:0 25px 65px #0004}.report-card iframe{display:block;width:100%;height:760px;border:1px solid #ffffff18;border-radius:13px;background:#090711}.report-toolbar{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:16px}.report-toolbar h3{margin:0;font-size:1rem}.report-toolbar a{color:#c9b8ff;text-decoration:none;font-size:.9rem}.report-toolbar a:hover{text-decoration:underline}
+    .resources{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.resource{display:flex;align-items:center;gap:12px;padding:16px;text-decoration:none;transition:transform .22s,border-color .22s}.resource-icon{color:#b8a1ff;font-size:20px}.resource b{display:block}.resource small{color:var(--muted)}
+    footer{border-top:1px solid var(--line);padding:25px 0 36px;color:#9891a8;font-size:.85rem}footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}footer a{color:#c3b1ff;text-decoration:none}
+    @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}@keyframes glow{from{opacity:.7;transform:translateX(-50%) scale(.94)}to{opacity:1;transform:translateX(-50%) scale(1.06)}}
+    @media(max-width:760px){.wrap{width:min(100% - 28px,1120px)}.topbar{height:auto;min-height:70px;flex-wrap:wrap;justify-content:center;padding:13px 0}.nav{order:3;width:100%;justify-content:center;flex-wrap:wrap}.nav a{padding:6px 10px}.repo-link{font-size:.82rem;padding:8px 12px}.hero{min-height:420px;padding:54px 10px}.stats,.features,.resources{grid-template-columns:1fr}.section{padding:44px 0}.report-card{padding:12px}.report-card iframe{height:700px}.report-toolbar{align-items:flex-start;flex-direction:column}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <header class="wrap topbar" id="top">
+    <a class="brand" href="#top"><span class="brand-icon">✦</span> Android Boot Analyzer</a>
+    <nav class="nav" aria-label="Main navigation"><a href="#overview">Overview</a><a href="#features">Features</a><a href="#report">Sample report</a><a href="#resources">Project files</a></nav>
+    <a class="repo-link" href="https://github.com/khandelwalbhavya853-coder/android-boot-log-analyzer">⌘ GitHub repo</a>
+  </header>
+  <main>
+    <section class="hero">
+      <div class="hero-content">
+        <div class="eyebrow">◈ ANDROID STARTUP DIAGNOSTICS</div>
+        <h1>Make sense of your boot logs<span class="accent">Find issues. See what’s slow.</span></h1>
+        <p class="lead">A Python tool that scans Android dmesg and logcat output, highlights common startup problems, and turns long logs into a clear diagnostic report.</p>
+        <div class="actions"><a class="button primary" href="#report">View sample report&nbsp; ↗</a><a class="button secondary" href="https://github.com/khandelwalbhavya853-coder/android-boot-log-analyzer">Explore the project&nbsp; ↗</a></div>
+      </div>
+    </section>
+    <section class="section wrap" id="overview">
+      <div class="section-head"><h2>Boot problems, made easier to spot</h2><p>Find useful signals across kernel, driver, firmware, SELinux, init, and framework messages.</p></div>
+      <div class="stats"><div class="stat"><strong>4</strong><span>sample issues detected</span></div><div class="stat"><strong>42 sec</strong><span>sample log timestamp span</span></div><div class="stat"><strong>1.45 sec</strong><span>slow init action in sample</span></div></div>
+      <p class="synthetic">Illustrative output from the included synthetic log—not measurements from a real device.</p>
+    </section>
+    <section class="section wrap" id="features">
+      <div class="section-head"><h2>What the analyzer does</h2><p>Designed as a small, understandable Python project for learning and boot-log triage.</p></div>
+      <div class="features">
+        <article class="feature"><span class="feature-icon">⌕</span><h3>Reads Android logs</h3><p>Accepts plain-text dmesg and logcat output and keeps the original line numbers for review.</p></article>
+        <article class="feature"><span class="feature-icon">◉</span><h3>Flags and classifies issues</h3><p>Uses readable rules to identify severity and group common kernel, driver, firmware, SELinux, init, and framework errors.</p></article>
+        <article class="feature"><span class="feature-icon">◷</span><h3>Checks boot timing</h3><p>Estimates the timestamp span and highlights initialization actions with long reported durations.</p></article>
+        <article class="feature"><span class="feature-icon">▤</span><h3>Builds reports</h3><p>Creates HTML and JSON reports with issue counts, slow stages, and practical recommendations.</p></article>
+        <article class="feature"><span class="feature-icon">⌘</span><h3>Includes test cases</h3><p>Three automated tests cover issue classification, slow-stage detection, and missing timestamps.</p></article>
+        <article class="feature"><span class="feature-icon">↗</span><h3>Works with ADB captures</h3><p>The README explains how to collect dmesg and logcat files from an emulator or development device.</p></article>
+      </div>
+    </section>
+    <section class="section wrap" id="report">
+      <div class="section-head"><h2>Sample diagnostic report</h2><p>Explore the report generated from the included example log.</p></div>
+      <div class="report-card"><div class="report-toolbar"><h3>Android Boot Diagnostic Report</h3><a href="sample-report.html">Open report in a new page ↗</a></div><iframe src="sample-report.html" title="Sample Android boot diagnostic report" loading="lazy"></iframe></div>
+    </section>
+    <section class="section wrap" id="resources">
+      <div class="section-head"><h2>Open the project files</h2><p>The complete source repository and its main learning materials are one click away.</p></div>
+      <div class="resources">
+        <a class="resource" href="https://github.com/khandelwalbhavya853-coder/android-boot-log-analyzer/blob/main/README.md"><span class="resource-icon">▤</span><span><b>README</b><small>Setup, ADB, usage, and tests</small></span></a>
+        <a class="resource" href="https://github.com/khandelwalbhavya853-coder/android-boot-log-analyzer/blob/main/boot_analyzer.py"><span class="resource-icon">⌘</span><span><b>Python source</b><small>Analyzer and report generator</small></span></a>
+        <a class="resource" href="https://github.com/khandelwalbhavya853-coder/android-boot-log-analyzer/blob/main/sample-logs/sample-boot.log"><span class="resource-icon">≋</span><span><b>Sample boot log</b><small>Synthetic dmesg-style input</small></span></a>
+        <a class="resource" href="https://github.com/khandelwalbhavya853-coder/android-boot-log-analyzer/blob/main/tests/test_boot_analyzer.py"><span class="resource-icon">✓</span><span><b>Test cases</b><small>Three automated checks</small></span></a>
+        <a class="resource" href="https://github.com/khandelwalbhavya853-coder/android-boot-log-analyzer/blob/main/reports/sample-report.json"><span class="resource-icon">{ }</span><span><b>JSON report</b><small>Machine-readable findings</small></span></a>
+        <a class="resource" href="https://github.com/khandelwalbhavya853-coder/android-boot-log-analyzer/blob/main/LICENSE"><span class="resource-icon">◇</span><span><b>MIT license</b><small>Project license</small></span></a>
+      </div>
+    </section>
+  </main>
+  <footer><div class="wrap"><span>Android Boot Log Analyzer · Python learning project</span><a href="https://github.com/khandelwalbhavya853-coder/android-boot-log-analyzer">View source on GitHub ↗</a></div></footer>
+</body>
+</html>
