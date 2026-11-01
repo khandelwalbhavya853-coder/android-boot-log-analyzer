@@ -1,0 +1,56 @@
+{
+  "title": "Android Boot Diagnostic Report",
+  "total_boot_time_seconds": 42.0,
+  "issue_count": 4,
+  "issue_counts_by_category": {
+    "Driver": 1,
+    "Firmware": 1,
+    "Init": 1,
+    "SELinux": 1
+  },
+  "issues": [
+    {
+      "severity": "ERROR",
+      "category": "Firmware",
+      "message": "[    1.211000] wlan: Direct firmware load for vendor/wifi/fw.bin failed with error -2",
+      "line_number": 3,
+      "timestamp": 1.211
+    },
+    {
+      "severity": "ERROR",
+      "category": "Driver",
+      "message": "[    1.220000] wlan: probe of 0000:01:00.0 failed with error -2",
+      "line_number": 4,
+      "timestamp": 1.22
+    },
+    {
+      "severity": "ERROR",
+      "category": "SELinux",
+      "message": "[    2.011000] audit(0.0:22): avc: denied { read } for comm=\"vendor_init\" name=\"calibration\" scontext=u:r:vendor_init:s0 tcontext=u:object_r:vendor_file:s0 tclass=file",
+      "line_number": 5,
+      "timestamp": 2.011
+    },
+    {
+      "severity": "ERROR",
+      "category": "Init",
+      "message": "[   42.000000] init: service 'vendor.camera-provider-2-4' failed to start",
+      "line_number": 7,
+      "timestamp": 42.0
+    }
+  ],
+  "slow_stages": [
+    {
+      "name": "[    3.000000] init: processing action (late-fs) took 1450ms",
+      "duration_ms": 1450.0,
+      "line_number": 6
+    }
+  ],
+  "recommendations": [
+    "Investigate driver probe or initialization failures, including device-tree and hardware configuration.",
+    "Check that the required firmware file exists at the expected path and matches the driver and device.",
+    "Review the SELinux denial context and add only the policy rule required for the intended access.",
+    "Inspect the failing init service or action, its dependencies, and the relevant init .rc configuration.",
+    "Profile the slow initialization stages and check whether their work can start later or run in parallel."
+  ],
+  "notes": []
+}

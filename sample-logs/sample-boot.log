@@ -1,0 +1,8 @@
+[    0.000000] Linux version 6.1.0-android (builder@host)
+[    0.582000] init: starting service 'ueventd'...
+[    1.211000] wlan: Direct firmware load for vendor/wifi/fw.bin failed with error -2
+[    1.220000] wlan: probe of 0000:01:00.0 failed with error -2
+[    2.011000] audit(0.0:22): avc: denied { read } for comm="vendor_init" name="calibration" scontext=u:r:vendor_init:s0 tcontext=u:object_r:vendor_file:s0 tclass=file
+[    3.000000] init: processing action (late-fs) took 1450ms
+[    8.400000] init: service 'vendor.camera-provider-2-4' failed to start
+[   42.000000] Boot completed
